@@ -1,0 +1,74 @@
+/* src/index.css */
+@import "tailwindcss";
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a3a3a3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #737373;
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Custom Focus Styles */
+.input-focus:focus {
+  border-color: #65794c;
+  box-shadow: 0 0 0 3px rgba(101, 121, 76, 0.2);
+}
+
+/* Olive Button Styles */
+.btn-olive {
+  background-color: #65794c;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-olive:hover {
+  background-color: #55683f;
+  transform: translateY(-2px);
+}
+
+/* Form Transition Effects */
+.form-container {
+  transition: all 0.5s ease;
+}
+
+/* Task Item Hover Effects */
+.task-item:hover .task-actions {
+  opacity: 1;
+}
+
+/* List Item Hover Effects */
+.list-item:hover .list-actions {
+  opacity: 1;
+}
+
+/* Base Font Family */
+body {
+  font-family: 'Poppins', sans-serif;
+}
