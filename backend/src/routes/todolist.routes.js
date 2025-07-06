@@ -7,7 +7,7 @@ import {
   toggleArchiveTodoList,
   deleteTodoList,
   getTodoListStats
-} from '../controllers/todoList.controller.js';
+} from '../controllers/todolist.controller.js';
 import { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
