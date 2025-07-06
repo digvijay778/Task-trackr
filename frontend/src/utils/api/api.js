@@ -1,4 +1,6 @@
 import axios from 'axios';
+console.log('Environment Mode:', import.meta.env.MODE);
+console.log('Environment Variables:', import.meta.env);
 const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:8001/api/v1" : "/api/v1";
 const api = axios.create({
   baseURL: BASE_URL,
