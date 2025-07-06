@@ -39,8 +39,8 @@ api.interceptors.response.use(
       try {
         // Attempt to refresh token
         const refreshResponse = await axios.post(
-          'http://localhost:8001/api/v1/user/refresh',
-          {},
++   `${BASE_URL}/user/refresh`,
+    {},
           { withCredentials: true }
         );
         console.log('Refresh response:', refreshResponse);
