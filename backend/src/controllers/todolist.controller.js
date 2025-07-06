@@ -1,7 +1,7 @@
 import TodoList from '../models/todoList.model.js';
 import Task from '../models/task.model.js';
 import ApiError from '../utils/ApiError.js';
-import ApiResponse from '../utils/apiResponse.js';
+import ApiResponse from '../utils/ApiResponse.js';
 import asyncHandler from '../utils/asynchandler.js';
 
 // Get all todo lists for authenticated user
