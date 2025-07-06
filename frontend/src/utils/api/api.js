@@ -1,7 +1,7 @@
 import axios from 'axios';
-
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:8001/api/v1" : "api/v1";
 const api = axios.create({
-  baseURL: 'http://localhost:8001/api/v1',
+  baseURL: BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -41,9 +41,9 @@ api.interceptors.response.use(
           {},
           { withCredentials: true }
         );
-        console.log('Refresh response:', refreshResponse); 
+        console.log('Refresh response:', refreshResponse);
         const newToken = refreshResponse.data.token;
-        console.log('New token:', newToken); 
+        console.log('New token:', newToken);
         localStorage.setItem('token', newToken);
 
         // Update the header and retry the original request
