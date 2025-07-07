@@ -1,6 +1,5 @@
 import axios from 'axios';
-console.log('Environment Mode:', import.meta.env.MODE);
-console.log('Environment Variables:', import.meta.env);
+
 const BASE_URL = "https://task-trackr-bga4.onrender.com/api/v1";
 const api = axios.create({
   baseURL: BASE_URL,
