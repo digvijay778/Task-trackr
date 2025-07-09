@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaTimes, FaSave } from 'react-icons/fa';
+import { FaTimes, FaSave, FaPlus, FaEdit } from 'react-icons/fa';
 
 export default function TaskModal({ 
   isOpen, 
@@ -23,6 +23,8 @@ export default function TaskModal({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!taskText.trim()) return;
+    
     const taskData = {
       text: taskText.trim(),
       completed: isCompleted
@@ -36,29 +38,43 @@ export default function TaskModal({
     onClose();
   };
 
+  const handleClose = () => {
+    setTaskText('');
+    setIsCompleted(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-        {/* ✅ FIXED: Dark background with white text */}
-        <div className="bg-olive-800 text-black px-4 py-3 rounded-t-lg flex justify-between items-center">
-          <h3 className="font-semibold text-lg">
-            {currentTask ? 'Edit Task' : 'Add New Task'}
-          </h3>
-          {/* ✅ FIXED: White text with hover effect */}
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 border border-gray-700/50 overflow-hidden">
+        
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+              {currentTask ? <FaEdit className="text-white text-sm" /> : <FaPlus className="text-white text-sm" />}
+            </div>
+            <h3 className="font-semibold text-lg text-white">
+              {currentTask ? 'Edit Task' : 'Add New Task'}
+            </h3>
+          </div>
           <button 
-            onClick={onClose}
-            className="text-black hover:text-olive-200 transition-colors"
+            onClick={handleClose}
+            className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
           >
-            <FaTimes />
+            <FaTimes className="text-lg" />
           </button>
         </div>
         
-        <div className="p-4">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="taskText" className="block text-gray-700 mb-2 font-medium">
+        {/* Content */}
+        <div className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Task Description */}
+            <div>
+              <label htmlFor="taskText" className="block text-gray-300 mb-3 font-medium">
                 Task Description
               </label>
               <textarea
@@ -66,40 +82,55 @@ export default function TaskModal({
                 value={taskText}
                 onChange={(e) => setTaskText(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent resize-none"
-                rows="3"
-                placeholder="Enter task description..."
+                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
+                rows="4"
+                placeholder="Enter your task description..."
+                maxLength={500}
               />
+              <div className="text-xs text-gray-500 mt-2">
+                {taskText.length}/500 characters
+              </div>
             </div>
             
-            <div className="mb-6 flex items-center">
+            {/* Completion Status */}
+            <div className="flex items-start space-x-3 p-4 bg-gray-700/30 rounded-xl border border-gray-600/50">
               <input
                 type="checkbox"
                 id="isCompleted"
                 checked={isCompleted}
                 onChange={(e) => setIsCompleted(e.target.checked)}
-                className="h-4 w-4 text-olive-600 focus:ring-olive-500 border-gray-300 rounded"
+                className="h-5 w-5 text-blue-600 focus:ring-blue-500 bg-gray-700 border-gray-600 rounded mt-0.5"
               />
-              <label htmlFor="isCompleted" className="ml-2 block text-sm text-gray-700">
-                Mark as completed
-              </label>
+              <div>
+                <label htmlFor="isCompleted" className="block text-gray-300 font-medium">
+                  Mark as completed
+                </label>
+                <p className="text-sm text-gray-500 mt-1">
+                  Check this if the task is already finished
+                </p>
+              </div>
             </div>
             
-            <div className="flex justify-end space-x-3">
-              {/* ✅ FIXED: Cancel button with proper gray styling */}
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-4 border-t border-gray-700/50">
               <button 
                 type="button"
-                onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={handleClose}
+                className="px-6 py-3 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 hover:text-white transition-all duration-200 font-medium"
               >
                 Cancel
               </button>
-              {/* ✅ FIXED: Submit button with olive background and white text */}
               <button 
                 type="submit"
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                disabled={!taskText.trim()}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  taskText.trim() 
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-[1.02]' 
+                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                }`}
               >
-                {currentTask ? 'Update Task' : 'Add Task'}
+                <FaSave className="text-sm" />
+                <span>{currentTask ? 'Update Task' : 'Add Task'}</span>
               </button>
             </div>
           </form>
