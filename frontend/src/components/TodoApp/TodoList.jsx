@@ -9,6 +9,10 @@ import {
   FaList,
   FaTimes,
   FaSignOutAlt,
+  FaUser,
+  FaChevronDown,
+  FaTasks,
+  FaCheckCircle,
 } from "react-icons/fa";
 import TaskModal from "./TaskModal";
 import todoService from "../../services/todoService";
@@ -345,35 +349,56 @@ export default function TodoList({ onLogout }) {
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black">
       {/* Header */}
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         <header className="flex flex-col md:flex-row justify-between items-center mb-8">
           <div className="flex items-center mb-4 md:mb-0">
-            <h1 className="text-3xl font-bold text-gray-800">Task Trackr</h1>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3">
+              <FaTasks className="text-white text-lg" />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              TaskTrackr
+            </h1>
           </div>
+          
           <div className="flex items-center space-x-4">
             <button
               onClick={() => showListModal()}
-              className="bg-olive-600 hover:bg-olive-700 px-4 py-2 rounded-lg flex items-center transition-colors text-olive-600 hover:text-olive-800 font-medium"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl flex items-center transition-all duration-200 transform hover:scale-105 shadow-lg"
             >
               <FaPlus className="mr-2" /> New List
             </button>
 
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 p-2 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <FaSignOutAlt className="mr-2" /> Logout
-            </button>
-
             <div className="relative">
-              <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover border-2 border-olive-600"
-              />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+              <button
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                className="flex items-center space-x-3 p-3 bg-gray-800/50 rounded-xl border border-gray-700/50 hover:bg-gray-700/50 transition-all duration-200"
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                  <FaUser className="text-white text-sm" />
+                </div>
+                <span className="text-gray-300 font-medium hidden md:block">
+                  {userData.name || 'User'}
+                </span>
+                <FaChevronDown className={`text-gray-400 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showProfileDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-xl border border-gray-700/50 z-50">
+                  <div className="p-3 border-b border-gray-700/50">
+                    <p className="text-white font-medium">{userData.name || 'User'}</p>
+                    <p className="text-gray-400 text-sm">{userData.email}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center space-x-3 p-3 text-red-400 hover:bg-red-900/20 transition-colors duration-200 rounded-b-xl"
+                  >
+                    <FaSignOutAlt />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -389,141 +414,153 @@ export default function TodoList({ onLogout }) {
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Lists Sidebar */}
-          <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="bg-olive-800 text-olive-600 px-4 py-3 flex justify-between items-center">
-              <h2 className="font-semibold text-lg text-olive-600">
+          <div className="w-full lg:w-1/3 bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex justify-between items-center">
+              <h2 className="font-semibold text-lg text-white flex items-center">
+                <FaList className="mr-2" />
                 Your Lists
               </h2>
-              <span className="bg-olive-600 text-xs px-2 py-1 rounded-full">
+              <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-medium">
                 {(state.lists || []).length}
               </span>
             </div>
-            <div className="h-96 overflow-y-auto p-2">
+            
+            <div className="h-96 overflow-y-auto p-4">
               {loading && (state.lists || []).length === 0 ? (
-                <div className="text-center py-10 text-gray-500">
-                  <div className="animate-spin w-8 h-8 border-4 border-olive-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                <div className="text-center py-10 text-gray-400">
+                  <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
                   <p>Loading your lists...</p>
                 </div>
               ) : (state.lists || []).length === 0 ? (
                 <div className="text-center py-10 text-gray-500">
-                  <FaList className="w-16 h-16 mx-auto mb-2 opacity-30" />
-                  <p>No lists yet. Create one!</p>
+                  <FaList className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                  <p className="mb-4">No lists yet. Create one!</p>
+                  <button
+                    onClick={() => showListModal()}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+                  >
+                    <FaPlus className="mr-2" /> Create List
+                  </button>
                 </div>
               ) : (
-                (state.lists || []).map((list, index) => {
-                  const listKey = list._id || `list-${index}`;
-                  const listPendingTasks = (list.tasks || []).filter(
-                    (task) => !task.completed
-                  ).length;
-                  const isActive = state.currentListId === list._id;
+                <div className="space-y-3">
+                  {(state.lists || []).map((list, index) => {
+                    const listKey = list._id || `list-${index}`;
+                    const listPendingTasks = (list.tasks || []).filter(
+                      (task) => !task.completed
+                    ).length;
+                    const isActive = state.currentListId === list._id;
 
-                  return (
-                    <div
-                      key={listKey}
-                      className={`list-item mb-2 rounded-lg transition-colors cursor-pointer ${
-                        isActive
-                          ? "bg-olive-100 border-l-4 border-olive-600"
-                          : "hover:bg-gray-50"
-                      }`}
-                      onClick={() => updateState({ currentListId: list._id })}
-                    >
-                      <div className="flex justify-between items-center p-3">
-                        <div className="flex items-center">
-                          <img
-                            src={`https://img.icons8.com/ios-filled/24/${
-                              listPendingTasks > 0 ? "6e7f41" : "a3a3a3"
-                            }/list.png`}
-                            alt="List"
-                            className="w-5 h-5 mr-3"
-                          />
-                          <div>
-                            <h3 className="font-medium text-gray-800">
-                              {list.title || list.name}
-                            </h3>
-                            <p className="text-xs text-gray-500">
-                              {listPendingTasks} pending task
-                              {listPendingTasks !== 1 ? "s" : ""}
-                            </p>
+                    return (
+                      <div
+                        key={listKey}
+                        className={`group relative p-4 rounded-xl transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? "bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30"
+                            : "bg-gray-700/30 hover:bg-gray-700/50 border border-gray-600/30"
+                        }`}
+                        onClick={() => updateState({ currentListId: list._id })}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-start space-x-3">
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                              listPendingTasks > 0 
+                                ? 'bg-gradient-to-br from-green-500 to-emerald-600' 
+                                : 'bg-gray-600'
+                            }`}>
+                              <FaCheckCircle className="text-white text-sm" />
+                            </div>
+                            <div>
+                              <h3 className="font-medium text-white mb-1">
+                                {list.title || list.name}
+                              </h3>
+                              <p className="text-xs text-gray-400">
+                                {listPendingTasks} pending • {(list.tasks || []).length} total
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button
+                              className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all duration-200"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                showListModal(list._id);
+                              }}
+                            >
+                              <FaPen className="text-xs" />
+                            </button>
+                            <button
+                              className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (list._id) {
+                                  showDeleteConfirmation(
+                                    "Are you sure you want to delete this list and all its tasks?",
+                                    () => deleteList(list._id)
+                                  );
+                                }
+                              }}
+                            >
+                              <FaTrash className="text-xs" />
+                            </button>
                           </div>
                         </div>
-                        <div className="list-actions opacity-0 flex space-x-1 transition-opacity">
-                          <button
-                            className="edit-list p-1 text-gray-400 hover:text-olive-600"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              showListModal(list._id);
-                            }}
-                          >
-                            <FaPen className="text-xs" />
-                          </button>
-                          <button
-                            className="delete-list p-1 text-gray-400 hover:text-red-600"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (list._id) {
-                                showDeleteConfirmation(
-                                  "Are you sure you want to delete this list and all its tasks?",
-                                  () => deleteList(list._id)
-                                );
-                              }
-                            }}
-                          >
-                            <FaTrash className="text-xs" />
-                          </button>
-                        </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </div>
               )}
             </div>
           </div>
 
           {/* Tasks Main Area */}
-          <div className="w-full lg:w-3/4 bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="w-full lg:w-2/3 bg-gray-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden">
             {loading && !currentList ? (
               <div className="h-96 flex flex-col items-center justify-center text-center p-6">
-                <div className="animate-spin w-12 h-12 border-4 border-olive-600 border-t-transparent rounded-full mb-4"></div>
-                <h3 className="text-xl font-medium text-gray-700 mb-2">
+                <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
+                <h3 className="text-xl font-medium text-white mb-2">
                   Loading your tasks...
                 </h3>
               </div>
             ) : !currentList ? (
               <div className="h-96 flex flex-col items-center justify-center text-center p-6">
-                <img
-                  src="https://img.icons8.com/fluency/96/000000/task-completed.png"
-                  alt="Empty"
-                  className="w-24 h-24 mb-4 opacity-50"
-                />
-                <h3 className="text-xl font-medium text-gray-700 mb-2">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center mb-6">
+                  <FaTasks className="text-4xl text-gray-500" />
+                </div>
+                <h3 className="text-xl font-medium text-white mb-2">
                   No list selected
                 </h3>
-                <p className="text-gray-500 mb-6">
-                  Select a list from the sidebar or create a new one to get
-                  started.
+                <p className="text-gray-400 mb-6">
+                  Select a list from the sidebar or create a new one to get started.
                 </p>
                 <button
                   onClick={() => showListModal()}
-                  className="bg-olive-600 hover:bg-olive-700 text-olive-600 px-4 py-2 rounded-lg flex items-center transition-colors"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl flex items-center transition-all duration-200 transform hover:scale-105"
                 >
                   <FaPlus className="mr-2" /> Create New List
                 </button>
               </div>
             ) : (
               <>
-                <div className="bg-olive-800 text-olive-600 px-4 py-3 flex justify-between items-center">
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex justify-between items-center">
                   <div>
-                    <h2 className="font-semibold text-lg">
+                    <h2 className="font-semibold text-lg text-white">
                       {currentList.title || currentList.name}
                     </h2>
-                    <p className="text-xs opacity-80">
-                      {pendingTasks} of {(currentList.tasks || []).length} task
-                      {(currentList.tasks || []).length !== 1 ? "s" : ""}
+                    <p className="text-blue-100 text-sm">
+                      {pendingTasks} of {(currentList.tasks || []).length} tasks remaining
                     </p>
                   </div>
                   <div className="flex space-x-2">
                     <button
-                      className="p-2 text-olive-200 hover:text-text-olive-600 transition-colors"
+                      className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                      onClick={() => showListModal(currentList._id)}
+                    >
+                      <FaPen />
+                    </button>
+                    <button
+                      className="p-2 text-white/80 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                       onClick={() =>
                         showDeleteConfirmation(
                           "Are you sure you want to delete this list and all its tasks?",
@@ -533,105 +570,101 @@ export default function TodoList({ onLogout }) {
                     >
                       <FaTrash />
                     </button>
-                    <button
-                      className="p-2 text-olive-200 hover:text-text-olive-600 transition-colors"
-                      onClick={() => showListModal(currentList._id)}
-                    >
-                      <FaPen />
-                    </button>
                   </div>
                 </div>
 
                 {/* Add Task button */}
-                <div className="p-4 border-b">
+                <div className="p-6 border-b border-gray-700/50">
                   <button
                     onClick={() => {
                       setCurrentTask(null);
                       setShowTaskModal(true);
                     }}
-                    className="w-full bg-olive-600 hover:bg-olive-700 text-black py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-4 rounded-xl flex items-center justify-center transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
                   >
                     <FaPlus className="mr-2" /> Add New Task
                   </button>
                 </div>
 
-                <div className="h-96 overflow-y-auto p-2">
+                <div className="h-96 overflow-y-auto p-4">
                   {loading && (currentList.tasks || []).length === 0 ? (
-                    <div className="text-center py-10 text-gray-500">
-                      <div className="animate-spin w-8 h-8 border-4 border-olive-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <div className="text-center py-10 text-gray-400">
+                      <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
                       <p>Loading tasks...</p>
                     </div>
                   ) : (currentList.tasks || []).length === 0 ? (
                     <div className="text-center py-10 text-gray-500">
-                      <img
-                        src="https://img.icons8.com/fluency/96/000000/task-completed.png"
-                        alt="Empty"
-                        className="w-16 h-16 mx-auto mb-2 opacity-30"
-                      />
+                      <div className="w-16 h-16 bg-gradient-to-br from-gray-600/20 to-gray-700/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <FaTasks className="text-2xl text-gray-500" />
+                      </div>
                       <p>No tasks in this list yet.</p>
                     </div>
                   ) : (
-                    (currentList.tasks || []).map((task, index) => {
-                      const taskKey = task._id || `task-${index}`;
-                      
-                      return (
-                        <div
-                          key={taskKey}
-                          className="task-item animate-fade-in mb-2 bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-all"
-                        >
-                          <div className="flex items-center">
-                            <button
-                              className={`toggle-complete mr-3 w-6 h-6 rounded-full border-2 ${
-                                task.completed
-                                  ? "border-olive-600 bg-olive-600 text-white"
-                                  : "border-gray-300"
-                              }`}
-                              onClick={() => toggleTaskComplete(task._id)}
-                              title={
-                                task.completed
-                                  ? "Mark as pending"
-                                  : "Mark as complete"
-                              }
-                            >
-                              {task.completed && <FaCheck className="text-xs" />}
-                            </button>
-                            <div
-                              className={`flex-1 ${
-                                task.completed
-                                  ? "line-through text-gray-400"
-                                  : "text-gray-700"
-                              }`}
-                            >
-                              {task.text}
-                            </div>
-                            <div className="task-actions opacity-0 flex space-x-2 transition-opacity">
+                    <div className="space-y-3">
+                      {(currentList.tasks || []).map((task, index) => {
+                        const taskKey = task._id || `task-${index}`;
+                        
+                        return (
+                          <div
+                            key={taskKey}
+                            className="group bg-gray-700/30 border border-gray-600/30 rounded-xl p-4 hover:bg-gray-700/50 transition-all duration-200"
+                          >
+                            <div className="flex items-center">
                               <button
-                                className="p-1 text-gray-400 hover:text-olive-600"
-                                onClick={() => {
-                                  setCurrentTask(task);
-                                  setShowTaskModal(true);
-                                }}
-                                title="Edit"
-                              >
-                                <FaPen className="text-xs" />
-                              </button>
-                              <button
-                                className="delete-task p-1 text-gray-400 hover:text-red-600"
-                                onClick={() =>
-                                  showDeleteConfirmation(
-                                    "Are you sure you want to delete this task?",
-                                    () => deleteTask(task._id)
-                                  )
+                                className={`mr-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+                                  task.completed
+                                    ? "border-green-500 bg-green-500 text-white"
+                                    : "border-gray-500 hover:border-green-500"
+                                }`}
+                                onClick={() => toggleTaskComplete(task._id)}
+                                title={
+                                  task.completed
+                                    ? "Mark as pending"
+                                    : "Mark as complete"
                                 }
-                                title="Delete"
                               >
-                                <FaTrash className="text-xs" />
+                                {task.completed && <FaCheck className="text-xs" />}
                               </button>
+                              
+                              <div
+                                className={`flex-1 ${
+                                  task.completed
+                                    ? "line-through text-gray-500"
+                                    : "text-gray-200"
+                                }`}
+                              >
+                                {task.text}
+                              </div>
+                              
+                              <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button
+                                  className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all duration-200"
+                                  onClick={() => {
+                                    setCurrentTask(task);
+                                    setShowTaskModal(true);
+                                  }}
+                                  title="Edit"
+                                >
+                                  <FaPen className="text-xs" />
+                                </button>
+                                <button
+                                  className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
+                                  onClick={() =>
+                                    showDeleteConfirmation(
+                                      "Are you sure you want to delete this task?",
+                                      () => deleteTask(task._id)
+                                    )
+                                  }
+                                  title="Delete"
+                                >
+                                  <FaTrash className="text-xs" />
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               </>
@@ -640,7 +673,7 @@ export default function TodoList({ onLogout }) {
         </div>
       </div>
 
-      {/* Keep all your existing modals exactly the same */}
+      {/* Task Modal */}
       <TaskModal
         isOpen={showTaskModal}
         onClose={() => setShowTaskModal(false)}
@@ -648,26 +681,26 @@ export default function TodoList({ onLogout }) {
         currentTask={currentTask}
       />
 
-      {/* All your existing modals remain unchanged */}
+      {/* Dark Theme Modals */}
       {/* New List Modal */}
       {showNewListModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-            <div className="bg-olive-800 text-olive-600 px-4 py-3 rounded-t-lg flex justify-between items-center">
-              <h3 className="font-semibold text-lg">Create New List</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex justify-between items-center">
+              <h3 className="font-semibold text-lg text-white">Create New List</h3>
               <button
                 onClick={() => setShowNewListModal(false)}
-                className="text-olive-600 hover:text-olive-200"
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
               >
                 <FaTimes />
               </button>
             </div>
-            <div className="p-4">
-              <form onSubmit={createNewList}>
-                <div className="mb-4">
+            <div className="p-6">
+              <form onSubmit={createNewList} className="space-y-6">
+                <div>
                   <label
                     htmlFor="listName"
-                    className="block text-gray-700 mb-2 font-medium"
+                    className="block text-gray-300 mb-3 font-medium"
                   >
                     List Name
                   </label>
@@ -679,7 +712,7 @@ export default function TodoList({ onLogout }) {
                       setModalData({ ...modalData, listName: e.target.value })
                     }
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter list name..."
                   />
                 </div>
@@ -687,13 +720,13 @@ export default function TodoList({ onLogout }) {
                   <button
                     type="button"
                     onClick={() => setShowNewListModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="px-6 py-3 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-all duration-200"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-olive-500 focus:ring-offset-2 transition-colors"
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105"
                     disabled={loading}
                   >
                     {loading ? "Creating..." : "Create List"}
@@ -707,23 +740,23 @@ export default function TodoList({ onLogout }) {
 
       {/* Edit List Modal */}
       {showEditListModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-            <div className="bg-olive-800 text-black px-4 py-3 rounded-t-lg flex justify-between items-center">
-              <h3 className="font-semibold text-lg">Edit List</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 flex justify-between items-center">
+              <h3 className="font-semibold text-lg text-white">Edit List</h3>
               <button
                 onClick={() => setShowEditListModal(false)}
-                className="text-white hover:text-olive-200"
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
               >
                 <FaTimes />
               </button>
             </div>
-            <div className="p-4">
-              <form onSubmit={updateList}>
-                <div className="mb-4">
+            <div className="p-6">
+              <form onSubmit={updateList} className="space-y-6">
+                <div>
                   <label
                     htmlFor="editListName"
-                    className="block text-gray-700 mb-2 font-medium"
+                    className="block text-gray-300 mb-3 font-medium"
                   >
                     List Name
                   </label>
@@ -735,7 +768,7 @@ export default function TodoList({ onLogout }) {
                       setModalData({ ...modalData, listName: e.target.value })
                     }
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-olive-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter list name..."
                   />
                 </div>
@@ -743,13 +776,13 @@ export default function TodoList({ onLogout }) {
                   <button
                     type="button"
                     onClick={() => setShowEditListModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="px-6 py-3 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-all duration-200"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105"
                     disabled={loading}
                   >
                     {loading ? "Saving..." : "Save Changes"}
@@ -763,24 +796,24 @@ export default function TodoList({ onLogout }) {
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-            <div className="bg-olive-800 text-olive px-4 py-3 rounded-t-lg flex justify-between items-center">
-              <h3 className="font-semibold text-lg">Confirm Action</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md border border-gray-700/50 overflow-hidden">
+            <div className="bg-gradient-to-r from-red-600 to-pink-600 px-6 py-4 flex justify-between items-center">
+              <h3 className="font-semibold text-lg text-white">Confirm Action</h3>
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="text-white hover:text-olive-200"
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
               >
                 <FaTimes />
               </button>
             </div>
-            <div className="p-4">
-              <p className="mb-6 text-gray-700">{modalData.confirmMessage}</p>
+            <div className="p-6">
+              <p className="mb-6 text-gray-300">{modalData.confirmMessage}</p>
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
                   onClick={() => setShowConfirmModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-6 py-3 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-all duration-200"
                 >
                   Cancel
                 </button>
@@ -790,7 +823,7 @@ export default function TodoList({ onLogout }) {
                     modalData.confirmAction();
                     setShowConfirmModal(false);
                   }}
-                  className="px-4 py-2 border border-gray-300 text-olive-600 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105"
                   disabled={loading}
                 >
                   {loading ? "Processing..." : "Confirm"}
@@ -803,17 +836,17 @@ export default function TodoList({ onLogout }) {
 
       {/* Error Alert */}
       {error && (
-        <div className="fixed bottom-4 right-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md max-w-md">
+        <div className="fixed bottom-4 right-4 bg-red-900/90 backdrop-blur-sm border border-red-500/30 text-red-200 p-4 rounded-xl shadow-2xl max-w-md z-50">
           <div className="flex items-center">
-            <div className="py-1">
-              <FaTimes className="text-red-500 mr-3" />
+            <div className="flex-shrink-0">
+              <FaTimes className="text-red-400 mr-3" />
             </div>
             <div className="flex-1">
               <p>{error}</p>
             </div>
             <button
               onClick={() => setError(null)}
-              className="ml-3 text-red-500 hover:text-red-700"
+              className="ml-3 text-red-400 hover:text-red-300 p-1 rounded transition-colors duration-200"
             >
               <FaTimes />
             </button>
